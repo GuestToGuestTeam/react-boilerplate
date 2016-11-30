@@ -1,10 +1,12 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
     entry: [
         'babel-polyfill',
-        './src/app.js'
+        './src/app.js',
+        './src/css/styles.css'
     ],
     output: {
         filename: '[name].[chunkhash].js',
@@ -23,6 +25,34 @@ module.exports = {
                 test: /\.js$/,
                 loaders: ['babel'],
                 exclude: /node_modules/
+            },
+            {
+                test: /\.json$/,
+                loader: 'json'
+            },
+            {
+                test: /\.css$/,
+                loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
+            },
+            {
+                test: /\.png$/,
+                loader: 'url?limit=100000'
+            },
+            {
+                test: /\.jpg$/,
+                loader: 'file'
+            },
+            {
+                test: /\.gif$/,
+                loader: 'file'
+            },
+            {
+                test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                loader: 'url?limit=10000&minetype=application/font-woff'
+            },
+            {
+                test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                loader: 'file'
             }
         ]
     },
@@ -46,6 +76,7 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             template: 'src/index.html',
+            favicon: 'src/favicon.ico',
             minify: {
                 removeComments: true,
                 collapseWhitespace: true,
@@ -57,8 +88,8 @@ module.exports = {
                 minifyJS: true,
                 minifyCSS: true,
                 minifyURLs: true
-            },
-            inject: true
-        })
+            }
+        }),
+        new ExtractTextPlugin('[name].[chunkhash].css')
     ]
 };
